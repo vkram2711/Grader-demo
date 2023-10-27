@@ -15,6 +15,7 @@ class _PollScreenState extends State<PollScreen> {
   String question = "";
   String answer = "";
   String? feedback;
+  String key = "";
   int? grade;
   bool loading = false;
 
@@ -53,6 +54,29 @@ class _PollScreenState extends State<PollScreen> {
                   course = value;
                 }),
               ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: const InputDecoration(
+                          labelText: "Api Key",
+                          hintText: "Generate OpenAI's API Key and paste here",
+                          labelStyle: TextStyle(
+                            color: Colors.black,
+                          )),
+                      cursorColor: Colors.black,
+                      onChanged: (value) {
+                        setState(() {
+                          key = value;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -110,7 +134,8 @@ class _PollScreenState extends State<PollScreen> {
                     loading = true;
                   });
 
-                  final response = await GraderApi.getFeedback(year, course, question, answer);
+                  final response = await GraderApi.getFeedback(
+                      year, course, question, answer, key);
 
                   setState(() {
                     loading = false;
@@ -133,10 +158,9 @@ class _PollScreenState extends State<PollScreen> {
                 child: const Text('Get feedback'),
               ),
             ),
-
-            if(loading) const CircularProgressIndicator(),
-            if(feedback != null) Text("Feedback: ${feedback!}"),
-            if(grade != null) Text("Grade: ${grade!}"),
+            if (loading) const CircularProgressIndicator(),
+            if (feedback != null) Text("Feedback: ${feedback!}"),
+            if (grade != null) Text("Grade: ${grade!}"),
           ],
         ),
       ),
